@@ -1,4 +1,4 @@
-"""Small presentation helpers shared by DataPilot's pages."""
+"""Small presentation helpers shared by Aurevia's pages."""
 
 from __future__ import annotations
 
@@ -6,6 +6,7 @@ import pandas as pd
 import streamlit as st
 
 from app.models.profile import DatasetProfile, FieldType, WarningSeverity
+from app.services.visualization import PLOTLY_CONFIG
 
 #: Emoji + label used when rendering an inferred field type.
 TYPE_BADGES: dict[FieldType, str] = {
@@ -25,6 +26,16 @@ _SEVERITY_RENDERERS = {
     WarningSeverity.WARNING: ("warning", "Warning"),
     WarningSeverity.INFO: ("info", "Info"),
 }
+
+
+def render_chart(figure) -> None:
+    """Render a Plotly figure with Aurevia's shared configuration.
+
+    ``st.plotly_chart`` already stretches to the container, and it has no
+    ``width`` parameter -- passing one leaks into Plotly's own kwargs and trips
+    a deprecation warning, so the sizing argument is deliberately omitted.
+    """
+    st.plotly_chart(figure, config=PLOTLY_CONFIG)
 
 
 def human_bytes(size: float) -> str:

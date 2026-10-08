@@ -105,7 +105,7 @@ def normalize_columns(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, str]]:
 
 
 def _restyle_pandas_dupe(name: str, original_names: set[str]) -> str:
-    """Turn pandas' ``col.1`` duplicate suffix into DataPilot's ``col_2``.
+    """Turn pandas' ``col.1`` duplicate suffix into Aurevia's ``col_2``.
 
     Only applied when the un-suffixed base name is also present, so a column
     genuinely called ``revision.1`` is left alone.

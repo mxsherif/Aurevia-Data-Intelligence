@@ -1,4 +1,4 @@
-"""DataPilot's Streamlit entry point.
+"""Aurevia's Streamlit entry point.
 
 Run it with ``python run.py`` (preferred) or ``streamlit run app/main.py``.
 """
@@ -17,14 +17,24 @@ if str(_PROJECT_ROOT) not in sys.path:
 import streamlit as st  # noqa: E402
 
 from app.config import APP_NAME, APP_TAGLINE, configure_logging, get_settings  # noqa: E402
-from app.ui.overview import STATE_ERROR, STATE_LOAD, STATE_PROFILE, render_overview, render_sidebar  # noqa: E402
+from app.ui.explore import render_explore  # noqa: E402
+from app.ui.overview import render_overview  # noqa: E402
+from app.ui.state import (  # noqa: E402
+    STATE_PAGE,
+    init_state,
+    render_data_source_sidebar,
+)
+from app.ui.visualize import render_visualize  # noqa: E402
 
 PAGE_ICON = "📊"
 
-
-def _init_state() -> None:
-    for key in (STATE_LOAD, STATE_PROFILE, STATE_ERROR):
-        st.session_state.setdefault(key, None)
+#: Page label -> renderer. Navigation is a plain radio rather than Streamlit's
+#: multipage files so that every page shares one session state and one sidebar.
+PAGES = {
+    "Overview": render_overview,
+    "Explore": render_explore,
+    "Visualize": render_visualize,
+}
 
 
 def main() -> None:
@@ -37,15 +47,16 @@ def main() -> None:
 
     settings = get_settings()
     configure_logging(settings)
-    _init_state()
+    init_state()
 
     with st.sidebar:
         st.title(f"{PAGE_ICON} {APP_NAME}")
         st.caption(APP_TAGLINE)
+        page = st.radio("Page", list(PAGES), key=STATE_PAGE, label_visibility="collapsed")
         st.markdown("---")
 
-    render_sidebar(settings)
-    render_overview(settings)
+    render_data_source_sidebar(settings)
+    PAGES[page](settings)
 
 
 main()

@@ -1,4 +1,4 @@
-"""Generate `sample_telecom_customers.csv` -- DataPilot's bundled demo dataset.
+"""Generate `sample_telecom_customers.csv` -- Aurevia's bundled demo dataset.
 
 The dataset is synthetic but deliberately *structured*: churn, revenue and
 satisfaction are driven by the other fields, signups follow a seasonal pattern,
@@ -344,7 +344,7 @@ def _summarise(df: pd.DataFrame) -> str:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Generate DataPilot's sample telecom dataset.")
+    parser = argparse.ArgumentParser(description="Generate Aurevia's sample telecom dataset.")
     parser.add_argument("--rows", type=int, default=DEFAULT_ROWS, help="number of customers")
     parser.add_argument("--seed", type=int, default=RANDOM_SEED, help="random seed")
     parser.add_argument("--output", type=Path, default=OUTPUT_PATH, help="output CSV path")

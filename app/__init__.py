@@ -1,3 +1,3 @@
-"""DataPilot -- an agentic AI data analyst."""
+"""Aurevia -- an agentic data-intelligence platform."""
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"

@@ -1,4 +1,4 @@
-"""Typed models shared across DataPilot."""
+"""Typed models shared across Aurevia."""
 
 from app.models.profile import (
     ColumnProfile,

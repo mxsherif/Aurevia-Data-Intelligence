@@ -1,4 +1,4 @@
-"""Central configuration for DataPilot.
+"""Central configuration for Aurevia.
 
 Values are read from the process environment, which is seeded from a `.env`
 file at the project root (see `.env.example`).  Nothing here raises: a missing
@@ -25,8 +25,8 @@ DATASETS_DIR = PROJECT_ROOT / "datasets"
 SCREENSHOTS_DIR = PROJECT_ROOT / "screenshots"
 SAMPLE_DATASET_PATH = DATASETS_DIR / "sample_telecom_customers.csv"
 
-APP_NAME = "DataPilot"
-APP_TAGLINE = "Agentic AI data analyst"
+APP_NAME = "Aurevia"
+APP_TAGLINE = "Agentic data intelligence"
 
 SUPPORTED_EXTENSIONS: tuple[str, ...] = (".csv", ".xlsx", ".xls")
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Launch the DataPilot Streamlit app.
+"""Launch the Aurevia Streamlit app.
 
     python run.py
     python run.py --port 8502
@@ -16,7 +16,7 @@ ENTRYPOINT = PROJECT_ROOT / "app" / "main.py"
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Run the DataPilot Streamlit app.")
+    parser = argparse.ArgumentParser(description="Run the Aurevia Streamlit app.")
     parser.add_argument("--port", type=int, default=8501, help="port to serve on")
     parser.add_argument("--host", default="localhost", help="address to bind")
     parser.add_argument(
