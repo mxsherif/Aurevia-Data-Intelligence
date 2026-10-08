@@ -17,7 +17,9 @@ if str(_PROJECT_ROOT) not in sys.path:
 import streamlit as st  # noqa: E402
 
 from app.config import APP_NAME, APP_TAGLINE, configure_logging, get_settings  # noqa: E402
+from app.ui.ask import render_ask  # noqa: E402
 from app.ui.explore import render_explore  # noqa: E402
+from app.ui.investigate import render_investigate  # noqa: E402
 from app.ui.overview import render_overview  # noqa: E402
 from app.ui.state import (  # noqa: E402
     STATE_PAGE,
@@ -34,6 +36,8 @@ PAGES = {
     "Overview": render_overview,
     "Explore": render_explore,
     "Visualize": render_visualize,
+    "Ask Aurevia": render_ask,
+    "Investigate": render_investigate,
 }
 
 

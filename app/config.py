@@ -35,12 +35,30 @@ SUPPORTED_EXTENSIONS: tuple[str, ...] = (".csv", ".xlsx", ".xls")
 # Helpers
 # --------------------------------------------------------------------------- #
 
+#: App-specific settings accept either prefix; `AUREVIA_` wins when both are
+#: set. `DATAPILOT_` predates the rename and is kept so existing `.env` files
+#: keep working.
+_ENV_PREFIXES = ("AUREVIA_", "DATAPILOT_")
+
+
+def _env_keys(key: str) -> tuple[str, ...]:
+    """The environment names to try for `key`, in priority order."""
+    for prefix in _ENV_PREFIXES:
+        if key.startswith(prefix):
+            bare = key[len(prefix):]
+            return tuple(f"{p}{bare}" for p in _ENV_PREFIXES)
+    return (key,)
+
+
 def _env_str(key: str, default: str = "") -> str:
-    value = os.getenv(key)
-    if value is None:
-        return default
-    value = value.strip()
-    return value or default
+    for name in _env_keys(key):
+        value = os.getenv(name)
+        if value is None:
+            continue
+        value = value.strip()
+        if value:
+            return value
+    return default
 
 
 def _env_int(key: str, default: int) -> int:
@@ -56,6 +74,21 @@ def _env_int(key: str, default: int) -> int:
         )
         return default
     return parsed if parsed > 0 else default
+
+
+def _env_float(key: str, default: float, *, minimum: float = 0.0) -> float:
+    """Read a float from the environment, falling back on anything unparsable."""
+    raw = _env_str(key)
+    if not raw:
+        return default
+    try:
+        parsed = float(raw)
+    except (TypeError, ValueError):
+        logging.getLogger(__name__).warning(
+            "Ignoring invalid value for %s=%r; using default %s", key, raw, default
+        )
+        return default
+    return parsed if parsed >= minimum else default
 
 
 # Placeholder values that should be treated as "not configured".
@@ -86,6 +119,16 @@ class Settings(BaseModel):
     preview_rows: int = 100
     log_level: str = "INFO"
 
+    # -- LLM layer (Phase 3) ---------------------------------------------- #
+    #: Seconds before an LLM request is abandoned.
+    llm_timeout_seconds: float = 45.0
+    #: Retries the SDK performs for transient failures.
+    llm_max_retries: int = 2
+    #: Low temperature: planning is a structured task, not a creative one.
+    llm_temperature: float = 0.1
+    #: Cap on the response size, which also caps cost per question.
+    llm_max_output_tokens: int = 1_200
+
     # -- derived ----------------------------------------------------------- #
 
     @property
@@ -106,6 +149,10 @@ class Settings(BaseModel):
             "max_rows": self.max_rows,
             "preview_rows": self.preview_rows,
             "log_level": self.log_level,
+            "llm_timeout_seconds": self.llm_timeout_seconds,
+            "llm_max_retries": self.llm_max_retries,
+            "llm_temperature": self.llm_temperature,
+            "llm_max_output_tokens": self.llm_max_output_tokens,
         }
 
 
@@ -129,6 +176,10 @@ def load_settings(env_file: str | Path | None = None, *, override: bool = False)
         max_rows=_env_int("DATAPILOT_MAX_ROWS", 500_000),
         preview_rows=_env_int("DATAPILOT_PREVIEW_ROWS", 100),
         log_level=_env_str("DATAPILOT_LOG_LEVEL", "INFO").upper(),
+        llm_timeout_seconds=_env_float("AUREVIA_LLM_TIMEOUT", 45.0, minimum=1.0),
+        llm_max_retries=_env_int("AUREVIA_LLM_MAX_RETRIES", 2),
+        llm_temperature=_env_float("AUREVIA_LLM_TEMPERATURE", 0.1),
+        llm_max_output_tokens=_env_int("AUREVIA_LLM_MAX_OUTPUT_TOKENS", 1_200),
     )
 
 

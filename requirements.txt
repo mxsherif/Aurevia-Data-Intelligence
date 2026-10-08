@@ -10,6 +10,9 @@ xlrd>=2.0              # legacy .xls support (best effort)
 streamlit>=1.49            # `width=` replaced `use_container_width=`
 plotly>=5.18,<7.0          # the visualization engine
 
+# --- AI layer --------------------------------------------------------------
+openai>=1.68,<2.0          # needs chat.completions.parse (structured output)
+
 # --- Configuration ---------------------------------------------------------
 python-dotenv>=1.0
 pydantic>=2.6,<3.0
